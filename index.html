@@ -10,8 +10,7 @@
     <header>
       <h1>在庫管理サイト</h1>
       <div class="operator-box">
-        <span>記入者: <strong id="currentOperator">未設定</strong></span>
-        <button id="changeOperatorBtn" type="button">名前を入力/変更</button>
+        <span>現在の記入者: <strong id="currentOperator">未設定</strong></span>
       </div>
     </header>
 
@@ -27,11 +26,17 @@
           <h2>在庫操作（増減・棚卸し）</h2>
           <form id="transactionForm">
             <div class="grid">
+              <label>記入者名<input id="operatorInlineInput" placeholder="例: 田中" required /></label>
               <label>対象品目<select id="itemSelect" required></select></label>
+              <label>棚番号で絞り込み
+                <select id="shelfFilter">
+                  <option value="">すべて</option>
+                </select>
+              </label>
               <label>操作
                 <select id="txType" required>
-                  <option value="add">入庫（+）</option>
                   <option value="remove">出庫（-）</option>
+                  <option value="add">入庫（+）</option>
                   <option value="count">棚卸し（実数セット）</option>
                 </select>
               </label>
@@ -55,6 +60,7 @@
                 <th>カウント</th>
                 <th>最低数</th>
                 <th>メモ</th>
+                <th>編集</th>
               </tr>
             </thead>
             <tbody id="itemTableBody"></tbody>
@@ -88,7 +94,7 @@
 
       <section class="page" data-page="history">
         <section class="card">
-          <h2>入力履歴</h2>
+          <h2>出庫履歴</h2>
           <table>
             <thead>
               <tr>
@@ -97,19 +103,53 @@
                 <th>記入内容</th>
               </tr>
             </thead>
-            <tbody id="historyTableBody"></tbody>
+            <tbody id="historyRemoveBody"></tbody>
+          </table>
+        </section>
+
+        <section class="card">
+          <h2>入庫履歴</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>日時</th>
+                <th>記入者</th>
+                <th>記入内容</th>
+              </tr>
+            </thead>
+            <tbody id="historyAddBody"></tbody>
+          </table>
+        </section>
+
+        <section class="card">
+          <h2>品目登録履歴</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>日時</th>
+                <th>記入者</th>
+                <th>記入内容</th>
+              </tr>
+            </thead>
+            <tbody id="historyRegisterBody"></tbody>
           </table>
         </section>
       </section>
     </main>
 
-    <dialog id="operatorDialog">
-      <form method="dialog" id="operatorForm">
-        <h2>最初に名前を入力してください</h2>
-        <p>すべての入力履歴に記入者名として保存されます。</p>
-        <label>記入者名<input id="operatorInput" required /></label>
+    <dialog id="editItemDialog">
+      <form method="dialog" id="editItemForm">
+        <h2>品目編集</h2>
+        <div class="grid">
+          <label>品名<input id="editName" required /></label>
+          <label>メーカー<input id="editMaker" /></label>
+          <label>棚番号<input id="editShelf" required /></label>
+          <label>カウント<input id="editCount" type="number" min="0" required /></label>
+          <label>最低数<input id="editMinimum" type="number" min="0" required /></label>
+        </div>
+        <label>品目メモ<textarea id="editMemo" rows="3"></textarea></label>
         <menu>
-          <button value="cancel" type="button" id="cancelOperatorBtn">キャンセル</button>
+          <button value="cancel" type="button" id="cancelEditBtn">キャンセル</button>
           <button value="default" type="submit">保存</button>
         </menu>
       </form>
