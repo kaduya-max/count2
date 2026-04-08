@@ -20,6 +20,7 @@ const historyRemoveBody = document.getElementById("historyRemoveBody");
 const historyRegisterBody = document.getElementById("historyRegisterBody");
 const txType = document.getElementById("txType");
 const txAmount = document.getElementById("txAmount");
+const txUnit = document.getElementById("txUnit");
 const txNote = document.getElementById("txNote");
 
 const editItemDialog = document.getElementById("editItemDialog");
@@ -28,6 +29,7 @@ const editName = document.getElementById("editName");
 const editMaker = document.getElementById("editMaker");
 const editShelf = document.getElementById("editShelf");
 const editCount = document.getElementById("editCount");
+const editUnit = document.getElementById("editUnit");
 const editMinimum = document.getElementById("editMinimum");
 const editMemo = document.getElementById("editMemo");
 const deleteItemBtn = document.getElementById("deleteItemBtn");
@@ -57,12 +59,14 @@ function persist() {
 }
 
 function normalizeItem(item) {
+  const unit = item.unit === "袋" ? "袋" : "箱";
   return {
     id: item.id,
     name: String(item.name ?? "").trim(),
     maker: String(item.maker ?? "").trim(),
     shelf: String(item.shelf ?? "").trim(),
     count: Math.max(0, Number(item.count) || 0),
+    unit,
     minimum: Math.max(0, Number(item.minimum) || 0),
     memo: String(item.memo ?? "").trim(),
   };
@@ -156,7 +160,7 @@ function renderItemSelect() {
   for (const item of candidates) {
     const option = document.createElement("option");
     option.value = item.id;
-    option.textContent = `${item.name}（棚:${item.shelf} / 在庫:${item.count}）`;
+    option.textContent = `${item.name}（棚:${item.shelf} / 在庫:${item.count}${item.unit}）`;
     itemSelect.appendChild(option);
   }
 
@@ -174,7 +178,7 @@ function renderItemTable() {
       row.classList.add("low-stock");
     }
 
-    row.innerHTML = `<td>${item.name}</td><td>${item.maker || "-"}</td><td>${item.shelf}</td><td>${item.count}</td><td>${item.minimum}</td><td>${item.memo || "-"}</td>`;
+    row.innerHTML = `<td>${item.name}</td><td>${item.maker || "-"}</td><td>${item.shelf}</td><td>${item.count}</td><td>${item.unit}</td><td>${item.minimum}</td><td>${item.memo || "-"}</td>`;
 
     const actionCell = document.createElement("td");
     const editBtn = document.createElement("button");
@@ -219,6 +223,8 @@ function render() {
   renderHistory();
 
   txAmount.placeholder = txType.value === "count" ? "現在の実数" : "増減の数量";
+  const selectedItem = state.items.find((entry) => entry.id === itemSelect.value);
+  txUnit.value = selectedItem?.unit || "箱";
 }
 
 function updateOperatorFromInline() {
@@ -267,6 +273,7 @@ function openEditDialog(itemId) {
   editMaker.value = item.maker;
   editShelf.value = item.shelf;
   editCount.value = item.count;
+  editUnit.value = item.unit;
   editMinimum.value = item.minimum;
   editMemo.value = item.memo;
   editItemDialog.showModal();
@@ -302,6 +309,12 @@ function setupEvents() {
     renderItemSelect();
   });
 
+  itemSelect.addEventListener("change", () => {
+    const item = state.items.find((entry) => entry.id === itemSelect.value);
+    if (!item) return;
+    txUnit.value = item.unit;
+  });
+
   listShelfFilter.addEventListener("change", () => {
     renderItemTable();
   });
@@ -315,6 +328,7 @@ function setupEvents() {
     const maker = String(formData.get("maker") || "").trim();
     const shelf = String(formData.get("shelf") || "").trim();
     const count = Math.max(0, Number(formData.get("count") || 0));
+    const unit = String(formData.get("unit") || "箱");
     const minimum = Math.max(0, Number(formData.get("minimum") || 0));
     const memo = String(formData.get("memo") || "").trim();
 
@@ -324,12 +338,13 @@ function setupEvents() {
       maker,
       shelf,
       count,
+      unit: unit === "袋" ? "袋" : "箱",
       minimum,
       memo,
     };
 
     state.items.push(item);
-    addHistory("register", `${name} / メーカー:${maker || "-"} / 棚:${shelf} / 初期数:${count} / 最低数:${minimum}`);
+    addHistory("register", `${name} / メーカー:${maker || "-"} / 棚:${shelf} / 初期数:${count}${item.unit} / 最低数:${minimum}`);
     persist();
     itemForm.reset();
     render();
@@ -350,17 +365,19 @@ function setupEvents() {
     if (!Number.isFinite(amount) || amount < 0) return;
 
     const type = txType.value;
+    const unit = txUnit.value === "袋" ? "袋" : "箱";
     const note = txNote.value.trim();
+    item.unit = unit;
 
     if (type === "remove") {
       item.count = Math.max(0, item.count - amount);
-      addHistory("remove", `${item.name} / 数量:-${amount}${note ? ` / メモ: ${note}` : ""}`);
+      addHistory("remove", `${item.name} / 数量:-${amount}${unit}${note ? ` / メモ: ${note}` : ""}`);
     } else if (type === "add") {
       item.count += amount;
-      addHistory("add", `${item.name} / 数量:+${amount}${note ? ` / メモ: ${note}` : ""}`);
+      addHistory("add", `${item.name} / 数量:+${amount}${unit}${note ? ` / メモ: ${note}` : ""}`);
     } else {
       item.count = amount;
-      addHistory("count", `${item.name} / 実数:${amount}${note ? ` / メモ: ${note}` : ""}`);
+      addHistory("count", `${item.name} / 実数:${amount}${unit}${note ? ` / メモ: ${note}` : ""}`);
     }
 
     persist();
@@ -388,6 +405,7 @@ function setupEvents() {
     item.maker = editMaker.value.trim();
     item.shelf = editShelf.value.trim();
     item.count = Math.max(0, Number(editCount.value) || 0);
+    item.unit = editUnit.value === "袋" ? "袋" : "箱";
     item.minimum = Math.max(0, Number(editMinimum.value) || 0);
     item.memo = editMemo.value.trim();
 
