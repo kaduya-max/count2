@@ -2,21 +2,20 @@ const STORAGE_KEY = "inventory-app-v1";
 
 const state = {
   operator: "",
-  procedure: "",
   items: [],
   history: [],
 };
 
 const currentOperator = document.getElementById("currentOperator");
 const operatorInlineInput = document.getElementById("operatorInlineInput");
-const procedure = document.getElementById("procedure");
-const saveProcedureBtn = document.getElementById("saveProcedureBtn");
 const itemForm = document.getElementById("itemForm");
 const itemSelect = document.getElementById("itemSelect");
-const shelfFilter = document.getElementById("shelfFilter");
+const operationShelfFilter = document.getElementById("operationShelfFilter");
+const listShelfFilter = document.getElementById("listShelfFilter");
 const transactionForm = document.getElementById("transactionForm");
 const itemTableBody = document.getElementById("itemTableBody");
 const historyAddBody = document.getElementById("historyAddBody");
+const historyCountBody = document.getElementById("historyCountBody");
 const historyRemoveBody = document.getElementById("historyRemoveBody");
 const historyRegisterBody = document.getElementById("historyRegisterBody");
 const txType = document.getElementById("txType");
@@ -74,7 +73,6 @@ function load() {
 
   const parsed = JSON.parse(raw);
   state.operator = parsed.operator || "";
-  state.procedure = parsed.procedure || "";
   state.items = Array.isArray(parsed.items) ? parsed.items.map(normalizeItem) : [];
   state.history = Array.isArray(parsed.history) ? parsed.history : [];
 }
@@ -110,33 +108,40 @@ function compareShelf(a, b) {
   return a.shelf.localeCompare(b.shelf, "ja", { numeric: true, sensitivity: "base" });
 }
 
-function filteredItems() {
-  const shelf = shelfFilter.value;
+function operationFilteredItems() {
+  const shelf = operationShelfFilter.value;
   const sorted = [...state.items].sort(compareShelf);
   if (!shelf) return sorted;
   return sorted.filter((item) => item.shelf === shelf);
 }
 
-function renderShelfFilterOptions() {
-  const current = shelfFilter.value;
+function renderShelfFilterOptions(filterElement) {
+  const current = filterElement.value;
   const shelves = Array.from(new Set(state.items.map((item) => item.shelf))).sort((a, b) =>
     a.localeCompare(b, "ja", { numeric: true, sensitivity: "base" }),
   );
 
-  shelfFilter.innerHTML = "";
+  filterElement.innerHTML = "";
   const allOption = document.createElement("option");
   allOption.value = "";
   allOption.textContent = "すべて";
-  shelfFilter.appendChild(allOption);
+  filterElement.appendChild(allOption);
 
   for (const shelf of shelves) {
     const option = document.createElement("option");
     option.value = shelf;
     option.textContent = shelf;
-    shelfFilter.appendChild(option);
+    filterElement.appendChild(option);
   }
 
-  shelfFilter.value = shelves.includes(current) ? current : "";
+  filterElement.value = shelves.includes(current) ? current : "";
+}
+
+function listFilteredItems() {
+  const shelf = listShelfFilter.value;
+  const sorted = [...state.items].sort(compareShelf);
+  if (!shelf) return sorted;
+  return sorted.filter((item) => item.shelf === shelf);
 }
 
 function isLowStock(item) {
@@ -145,7 +150,7 @@ function isLowStock(item) {
 
 function renderItemSelect() {
   itemSelect.innerHTML = "";
-  const candidates = filteredItems();
+  const candidates = operationFilteredItems();
 
   for (const item of candidates) {
     const option = document.createElement("option");
@@ -162,7 +167,7 @@ function renderItemSelect() {
 function renderItemTable() {
   itemTableBody.innerHTML = "";
 
-  for (const item of filteredItems()) {
+  for (const item of listFilteredItems()) {
     const row = document.createElement("tr");
     if (isLowStock(item)) {
       row.classList.add("low-stock");
@@ -185,12 +190,15 @@ function renderItemTable() {
 
 function renderHistory() {
   historyAddBody.innerHTML = "";
+  historyCountBody.innerHTML = "";
   historyRemoveBody.innerHTML = "";
   historyRegisterBody.innerHTML = "";
 
   for (const record of state.history) {
     if (record.type === "add") {
       historyAddBody.appendChild(rowFromRecord(record));
+    } else if (record.type === "count") {
+      historyCountBody.appendChild(rowFromRecord(record));
     } else if (record.type === "remove") {
       historyRemoveBody.appendChild(rowFromRecord(record));
     } else if (record.type === "register") {
@@ -202,9 +210,9 @@ function renderHistory() {
 function render() {
   currentOperator.textContent = state.operator || "未設定";
   operatorInlineInput.value = state.operator;
-  procedure.value = state.procedure;
 
-  renderShelfFilterOptions();
+  renderShelfFilterOptions(operationShelfFilter);
+  renderShelfFilterOptions(listShelfFilter);
   renderItemSelect();
   renderItemTable();
   renderHistory();
@@ -267,16 +275,12 @@ function setupEvents() {
     render();
   });
 
-  shelfFilter.addEventListener("change", () => {
+  operationShelfFilter.addEventListener("change", () => {
     renderItemSelect();
-    renderItemTable();
   });
 
-  saveProcedureBtn.addEventListener("click", () => {
-    if (!requireOperator()) return;
-    state.procedure = procedure.value.trim();
-    persist();
-    render();
+  listShelfFilter.addEventListener("change", () => {
+    renderItemTable();
   });
 
   itemForm.addEventListener("submit", (event) => {
@@ -302,7 +306,7 @@ function setupEvents() {
     };
 
     state.items.push(item);
-    addHistory("register", `品目登録: ${name} / メーカー:${maker || "-"} / 棚:${shelf} / 初期数:${count} / 最低数:${minimum}`);
+    addHistory("register", `${name} / メーカー:${maker || "-"} / 棚:${shelf} / 初期数:${count} / 最低数:${minimum}`);
     persist();
     itemForm.reset();
     render();
@@ -327,12 +331,13 @@ function setupEvents() {
 
     if (type === "remove") {
       item.count = Math.max(0, item.count - amount);
-      addHistory("remove", `出庫: ${item.name} -${amount}${note ? ` / メモ: ${note}` : ""}`);
+      addHistory("remove", `${item.name} / 数量:-${amount}${note ? ` / メモ: ${note}` : ""}`);
     } else if (type === "add") {
       item.count += amount;
-      addHistory("add", `入庫: ${item.name} +${amount}${note ? ` / メモ: ${note}` : ""}`);
+      addHistory("add", `${item.name} / 数量:+${amount}${note ? ` / メモ: ${note}` : ""}`);
     } else {
       item.count = amount;
+      addHistory("count", `${item.name} / 実数:${amount}${note ? ` / メモ: ${note}` : ""}`);
     }
 
     persist();
