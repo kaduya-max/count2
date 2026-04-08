@@ -6,8 +6,8 @@ const state = {
   history: [],
 };
 
-const currentOperator = document.getElementById("currentOperator");
 const operatorInlineInput = document.getElementById("operatorInlineInput");
+const operatorSetupInput = document.getElementById("operatorSetupInput");
 const itemForm = document.getElementById("itemForm");
 const itemSelect = document.getElementById("itemSelect");
 const operationShelfFilter = document.getElementById("operationShelfFilter");
@@ -30,6 +30,7 @@ const editShelf = document.getElementById("editShelf");
 const editCount = document.getElementById("editCount");
 const editMinimum = document.getElementById("editMinimum");
 const editMemo = document.getElementById("editMemo");
+const deleteItemBtn = document.getElementById("deleteItemBtn");
 const cancelEditBtn = document.getElementById("cancelEditBtn");
 
 const m1AlertDialog = document.getElementById("m1AlertDialog");
@@ -208,8 +209,8 @@ function renderHistory() {
 }
 
 function render() {
-  currentOperator.textContent = state.operator || "未設定";
   operatorInlineInput.value = state.operator;
+  operatorSetupInput.value = state.operator;
 
   renderShelfFilterOptions(operationShelfFilter);
   renderShelfFilterOptions(listShelfFilter);
@@ -226,13 +227,27 @@ function updateOperatorFromInline() {
 
   state.operator = name;
   persist();
-  currentOperator.textContent = state.operator;
   return true;
 }
 
-function requireOperator() {
+function updateOperatorFromSetup() {
+  const name = operatorSetupInput.value.trim();
+  if (!name) return false;
+
+  state.operator = name;
+  persist();
+  return true;
+}
+
+function requireOperatorFromStock() {
   if (updateOperatorFromInline()) return true;
   alert("在庫操作の中の『記入者名』を入力してください。");
+  return false;
+}
+
+function requireOperatorFromSetup() {
+  if (updateOperatorFromSetup()) return true;
+  alert("品目登録の上にある『記入者名』を入力してください。");
   return false;
 }
 
@@ -275,6 +290,14 @@ function setupEvents() {
     render();
   });
 
+  operatorSetupInput.addEventListener("change", () => {
+    const name = operatorSetupInput.value.trim();
+    if (!name) return;
+    state.operator = name;
+    persist();
+    render();
+  });
+
   operationShelfFilter.addEventListener("change", () => {
     renderItemSelect();
   });
@@ -285,7 +308,7 @@ function setupEvents() {
 
   itemForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    if (!requireOperator()) return;
+    if (!requireOperatorFromSetup()) return;
 
     const formData = new FormData(itemForm);
     const name = String(formData.get("name") || "").trim();
@@ -318,7 +341,7 @@ function setupEvents() {
 
   transactionForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    if (!requireOperator()) return;
+    if (!requireOperatorFromStock()) return;
 
     const item = state.items.find((entry) => entry.id === itemSelect.value);
     if (!item) return;
@@ -375,6 +398,24 @@ function setupEvents() {
     if (isLowStock(item)) {
       showM1Alert(item);
     }
+  });
+
+  deleteItemBtn.addEventListener("click", () => {
+    if (!editingItemId) return;
+
+    const item = state.items.find((entry) => entry.id === editingItemId);
+    if (!item) {
+      closeEditDialog();
+      return;
+    }
+
+    const ok = confirm(`「${item.name}」を在庫一覧から削除します。よろしいですか？`);
+    if (!ok) return;
+
+    state.items = state.items.filter((entry) => entry.id !== editingItemId);
+    persist();
+    render();
+    closeEditDialog();
   });
 
   cancelEditBtn.addEventListener("click", closeEditDialog);
