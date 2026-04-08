@@ -67,6 +67,13 @@ main {
   gap: 10px;
 }
 
+.inline-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
 label {
   display: grid;
   gap: 6px;
@@ -100,6 +107,16 @@ button {
 
 button:hover {
   background: #1e40af;
+}
+
+button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.edit-btn {
+  margin-top: 0;
+  padding: 5px 10px;
 }
 
 table {
