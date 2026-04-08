@@ -1,0 +1,170 @@
+:root {
+  color-scheme: light;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f5f7fb;
+  color: #1f2937;
+}
+
+header {
+  background: #1d4ed8;
+  color: white;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+main {
+  max-width: 1080px;
+  margin: 20px auto;
+  padding: 0 16px 20px;
+  display: grid;
+  gap: 16px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  margin-top: 0;
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.tab.active {
+  background: #1d4ed8;
+  color: #ffffff;
+}
+
+.page {
+  display: none;
+  gap: 16px;
+}
+
+.page.active {
+  display: grid;
+}
+
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.95rem;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+input,
+textarea,
+select {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+button {
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1e40af;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+th,
+td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.hint {
+  margin-top: 0;
+  color: #6b7280;
+}
+
+.operator-box {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+menu {
+  padding: 0;
+  display: flex;
+  justify-content: end;
+  gap: 8px;
+}
+
+dialog {
+  border: none;
+  border-radius: 10px;
+  padding: 16px;
+  width: min(420px, 92vw);
+}
+
+.low-stock td {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.close-btn {
+  margin: 0;
+  background: transparent;
+  color: #111827;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  background: #e5e7eb;
+}

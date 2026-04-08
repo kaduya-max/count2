@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>在庫管理</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>在庫管理サイト</h1>
+      <div class="operator-box">
+        <span>記入者: <strong id="currentOperator">未設定</strong></span>
+        <button id="changeOperatorBtn" type="button">名前を入力/変更</button>
+      </div>
+    </header>
+
+    <main>
+      <nav class="tabs" aria-label="画面切り替え">
+        <button class="tab active" type="button" data-tab="stock">1ページ目: 現在の在庫</button>
+        <button class="tab" type="button" data-tab="setup">2ページ目: 棚卸・品目登録</button>
+        <button class="tab" type="button" data-tab="history">3ページ目: 履歴</button>
+      </nav>
+
+      <section class="page active" data-page="stock">
+        <section class="card">
+          <h2>在庫操作（増減・棚卸し）</h2>
+          <form id="transactionForm">
+            <div class="grid">
+              <label>対象品目<select id="itemSelect" required></select></label>
+              <label>操作
+                <select id="txType" required>
+                  <option value="add">入庫（+）</option>
+                  <option value="remove">出庫（-）</option>
+                  <option value="count">棚卸し（実数セット）</option>
+                </select>
+              </label>
+              <label>数量<input id="txAmount" type="number" min="0" required /></label>
+            </div>
+            <label>記入内容（理由・補足）
+              <textarea id="txNote" rows="2" placeholder="例: 研究室Aで10個使用"></textarea>
+            </label>
+            <button type="submit">履歴に記録して反映</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>現在の在庫一覧</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>品名</th>
+                <th>メーカー</th>
+                <th>棚番号</th>
+                <th>カウント</th>
+                <th>最低数</th>
+                <th>メモ</th>
+              </tr>
+            </thead>
+            <tbody id="itemTableBody"></tbody>
+          </table>
+        </section>
+      </section>
+
+      <section class="page" data-page="setup">
+        <section class="card">
+          <h2>棚卸しのやり方</h2>
+          <p class="hint">棚卸し手順を自由に記入し、チームで共有できます。</p>
+          <textarea id="procedure" rows="6" placeholder="例: 毎週金曜17時に全棚をカウント。開封済みはメモ欄に記載。"></textarea>
+          <button id="saveProcedureBtn" type="button">手順を保存</button>
+        </section>
+
+        <section class="card">
+          <h2>品目登録</h2>
+          <form id="itemForm">
+            <div class="grid">
+              <label>品名<input name="name" required /></label>
+              <label>メーカー<input name="maker" /></label>
+              <label>棚番号<input name="shelf" placeholder="例: A2, C4" required /></label>
+              <label>初期カウント<input name="count" type="number" min="0" value="0" required /></label>
+              <label>最低数<input name="minimum" type="number" min="0" value="0" required /></label>
+            </div>
+            <label>品目メモ<textarea name="memo" rows="3" placeholder="サイズ、保管条件、注意点など"></textarea></label>
+            <button type="submit">品目を登録</button>
+          </form>
+        </section>
+      </section>
+
+      <section class="page" data-page="history">
+        <section class="card">
+          <h2>入力履歴</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>日時</th>
+                <th>記入者</th>
+                <th>記入内容</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="operatorDialog">
+      <form method="dialog" id="operatorForm">
+        <h2>最初に名前を入力してください</h2>
+        <p>すべての入力履歴に記入者名として保存されます。</p>
+        <label>記入者名<input id="operatorInput" required /></label>
+        <menu>
+          <button value="cancel" type="button" id="cancelOperatorBtn">キャンセル</button>
+          <button value="default" type="submit">保存</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <dialog id="m1AlertDialog">
+      <form method="dialog">
+        <div class="alert-header">
+          <h2>在庫警告</h2>
+          <button type="button" id="closeM1AlertBtn" class="close-btn" aria-label="閉じる">×</button>
+        </div>
+        <p id="m1AlertMessage">M1に報告してください。</p>
+      </form>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>

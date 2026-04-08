@@ -1,0 +1,48 @@
+## Hi there 👋
+
+<!--
+**kaduya-max/kaduya-max** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+
+Here are some ideas to get you started:
+
+- 🔭 I’m currently working on ...
+- 🌱 I’m currently learning ...
+- 👯 I’m looking to collaborate on ...
+- 🤔 I’m looking for help with ...
+- 💬 Ask me about ...
+- 📫 How to reach me: ...
+- 😄 Pronouns: ...
+- ⚡ Fun fact: ...
+-->
+# 在庫管理サイト
+
+シンプルなブラウザ版の在庫管理ツールです。以下を記録できます。
+
+- 棚卸しのやり方
+- 品名 / メーカー / 棚番号 / メモ / 最低数
+- 在庫カウント（入庫・出庫・棚卸し）
+- 在庫が最低数以下になったときの「M1に報告してください」警告
+- 入力履歴（日時・記入者・内容）
+
+## 画面構成（タブ）
+
+1. 現在の在庫（在庫操作 + 在庫一覧）
+2. 棚卸・品目登録（棚卸し手順 + 品目登録）
+3. 履歴（日時 / 記入者 / 内容）
+
+## 使い方
+
+1. `index.html` をブラウザで開く
+2. 最初に記入者名を入力
+3. 品目登録で初期在庫と最低数を登録
+4. 在庫操作で入庫・出庫・棚卸しを記録
+5. 在庫が最低数以下になると警告が表示され、×で閉じるまで操作を再開できません
+6. 入庫で最低数を上回ると、在庫一覧の文字色は黒に戻ります
+
+## 保存先と保存期間
+
+- 保存先: ブラウザの `localStorage`
+- 保存単位: 「同じブラウザ + 同じ端末 + 同じURL」ごと
+- 保存期間: ユーザーが消去しない限り維持（ブラウザデータ削除で消える）
+- 保存量: 1オリジンあたり通常約5MB前後（ブラウザに依存）
+- このアプリ内の履歴は最大500件で古い順に削除
