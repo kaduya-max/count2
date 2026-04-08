@@ -9,9 +9,6 @@
   <body>
     <header>
       <h1>在庫管理サイト</h1>
-      <div class="operator-box">
-        <span>現在の記入者: <strong id="currentOperator">未設定</strong></span>
-      </div>
     </header>
 
     <main>
@@ -87,6 +84,7 @@
       <section class="page" data-page="setup">
         <section class="card">
           <h2>品目登録</h2>
+          <label>記入者名<input id="operatorSetupInput" placeholder="例: 田中" required /></label>
           <p class="test-placeholder">
             test<br />
             <br />
@@ -95,7 +93,7 @@
             <br />
           </p>
           <form id="itemForm">
-            <div class="grid">
+            <div class="vertical-fields">
               <label>品名<input name="name" required /></label>
               <label>メーカー<input name="maker" /></label>
               <label>棚番号<input name="shelf" placeholder="例: A2, C4" required /></label>
@@ -108,7 +106,7 @@
         </section>
       </section>
 
-      <section class="page" data-page="history">
+      <section class="page compact-history" data-page="history">
         <section class="card">
           <h2>出庫履歴</h2>
           <table class="history-table history-table-8">
@@ -179,6 +177,7 @@
         </div>
         <label>品目メモ<textarea id="editMemo" rows="3"></textarea></label>
         <menu>
+          <button value="destructive" type="button" id="deleteItemBtn">この品目を削除</button>
           <button value="cancel" type="button" id="cancelEditBtn">キャンセル</button>
           <button value="default" type="submit">保存</button>
         </menu>
