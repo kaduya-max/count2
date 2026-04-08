@@ -82,6 +82,12 @@ main {
   grid-template-columns: 1fr;
 }
 
+.vertical-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
 .inline-controls {
   display: flex;
   gap: 12px;
@@ -124,6 +130,14 @@ button:hover {
   background: #1e40af;
 }
 
+#deleteItemBtn {
+  background: #dc2626;
+}
+
+#deleteItemBtn:hover {
+  background: #b91c1c;
+}
+
 button:disabled {
   background: #94a3b8;
   cursor: not-allowed;
@@ -160,6 +174,24 @@ table {
   max-height: 200px;
 }
 
+.compact-history .card {
+  padding: 10px 12px;
+}
+
+.compact-history h2 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.compact-history table {
+  font-size: 0.82rem;
+}
+
+.compact-history th,
+.compact-history td {
+  padding: 5px 6px;
+}
+
 th,
 td {
   border-bottom: 1px solid #e5e7eb;
@@ -178,12 +210,6 @@ td {
   margin-bottom: 12px;
   color: #6b7280;
   line-height: 1.8;
-}
-
-.operator-box {
-  display: flex;
-  gap: 10px;
-  align-items: center;
 }
 
 menu {
