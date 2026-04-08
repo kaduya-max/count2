@@ -13,9 +13,9 @@
 
     <main>
       <nav class="tabs" aria-label="画面切り替え">
-        <button class="tab active" type="button" data-tab="stock">1ページ目: 現在の在庫</button>
-        <button class="tab" type="button" data-tab="setup">2ページ目: 棚卸・品目登録</button>
-        <button class="tab" type="button" data-tab="history">3ページ目: 履歴</button>
+        <button class="tab active" type="button" data-tab="stock">現在の在庫</button>
+        <button class="tab" type="button" data-tab="setup">棚卸・品目登録</button>
+        <button class="tab" type="button" data-tab="history">履歴</button>
       </nav>
 
       <section class="page active" data-page="stock">
@@ -46,7 +46,7 @@
               <label>数量<input id="txAmount" type="number" min="0" required /></label>
             </div>
             <div class="form-row form-row-operator">
-              <label>記入者名<input id="operatorInlineInput" placeholder="例: 田中" required /></label>
+              <label>記入者名<input id="operatorInlineInput" placeholder="例: 田中尚人" required /></label>
             </div>
             <label>記入内容（理由・補足）
               <textarea id="txNote" rows="2" placeholder="例: 研究室Aで10個使用"></textarea>
@@ -70,7 +70,7 @@
                 <th>品名</th>
                 <th>メーカー</th>
                 <th>棚番号</th>
-                <th>カウント</th>
+                <th>数量</th>
                 <th>最低数</th>
                 <th>メモ</th>
                 <th>編集</th>
@@ -114,7 +114,7 @@
               <tr>
                 <th>日時</th>
                 <th>記入者</th>
-                <th>記入内容</th>
+                <th>品名</th>
               </tr>
             </thead>
             <tbody id="historyRemoveBody"></tbody>
@@ -128,7 +128,7 @@
               <tr>
                 <th>日時</th>
                 <th>記入者</th>
-                <th>記入内容</th>
+                <th>品名</th>
               </tr>
             </thead>
             <tbody id="historyAddBody"></tbody>
@@ -142,7 +142,7 @@
               <tr>
                 <th>日時</th>
                 <th>記入者</th>
-                <th>記入内容</th>
+                <th>品名</th>
               </tr>
             </thead>
             <tbody id="historyCountBody"></tbody>
@@ -156,7 +156,7 @@
               <tr>
                 <th>日時</th>
                 <th>記入者</th>
-                <th>記入内容</th>
+                <th>品名</th>
               </tr>
             </thead>
             <tbody id="historyRegisterBody"></tbody>
@@ -172,7 +172,7 @@
           <label>品名<input id="editName" required /></label>
           <label>メーカー<input id="editMaker" /></label>
           <label>棚番号<input id="editShelf" required /></label>
-          <label>カウント<input id="editCount" type="number" min="0" required /></label>
+          <label>数量<input id="editCount" type="number" min="0" required /></label>
           <label>最低数<input id="editMinimum" type="number" min="0" required /></label>
         </div>
         <label>品目メモ<textarea id="editMemo" rows="3"></textarea></label>
