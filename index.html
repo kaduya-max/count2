@@ -52,7 +52,7 @@
               </label>
             </div>
             <div class="form-row form-row-operator">
-              <label>記入者名<input id="operatorInlineInput" placeholder="例: 田中" required /></label>
+              <label>記入者名<input id="operatorInlineInput" placeholder="例: 中村　元" required /></label>
             </div>
             <label>記入内容（理由・補足）
               <textarea id="txNote" rows="2" placeholder="例: 研究室Aで10個使用"></textarea>
@@ -76,7 +76,7 @@
                 <th>品名</th>
                 <th>メーカー</th>
                 <th>棚番号</th>
-                <th>カウント</th>
+                <th>数量</th>
                 <th>単位</th>
                 <th>最低数</th>
                 <th>メモ</th>
@@ -91,7 +91,7 @@
       <section class="page" data-page="setup">
         <section class="card">
           <h2>品目登録</h2>
-          <label>記入者名<input id="operatorSetupInput" placeholder="例: 田中" required /></label>
+          <label>記入者名<input id="operatorSetupInput" placeholder="例: 中村　元" required /></label>
           <p class="test-placeholder">
             test<br />
             <br />
@@ -104,7 +104,7 @@
               <label>品名<input name="name" required /></label>
               <label>メーカー<input name="maker" /></label>
               <label>棚番号<input name="shelf" placeholder="例: A2, C4" required /></label>
-              <label>初期カウント<input name="count" type="number" min="0" value="0" required /></label>
+              <label>初期数量<input name="count" type="number" min="0" value="0" required /></label>
               <label>単位
                 <select name="unit">
                   <option value="箱">箱</option>
@@ -141,7 +141,7 @@
               <tr>
                 <th>日時</th>
                 <th>記入者</th>
-                <th>記入内容</th>
+                <th>品名</th>
               </tr>
             </thead>
             <tbody id="historyAddBody"></tbody>
@@ -155,7 +155,7 @@
               <tr>
                 <th>日時</th>
                 <th>記入者</th>
-                <th>記入内容</th>
+                <th>品目</th>
               </tr>
             </thead>
             <tbody id="historyCountBody"></tbody>
@@ -169,7 +169,7 @@
               <tr>
                 <th>日時</th>
                 <th>記入者</th>
-                <th>記入内容</th>
+                <th>品目</th>
               </tr>
             </thead>
             <tbody id="historyRegisterBody"></tbody>
