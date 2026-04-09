@@ -59,7 +59,7 @@ function persist() {
 }
 
 function normalizeItem(item) {
-    const unit = String(item.unit ?? "").trim() || "個";
+  const unit = String(item.unit ?? "").trim() || "箱";
   return {
     id: item.id,
     name: String(item.name ?? "").trim(),
@@ -224,11 +224,7 @@ function render() {
 
   txAmount.placeholder = txType.value === "count" ? "現在の実数" : "増減の数量";
   const selectedItem = state.items.find((entry) => entry.id === itemSelect.value);
-  txUnit.value = selectedItem?.unit || "個";
-}
-
-function normalizeUnit(value, fallback = "個") {
-  return String(value ?? "").trim() || fallback;
+  txUnit.value = selectedItem?.unit || "箱";
 }
 
 function updateOperatorFromInline() {
@@ -316,7 +312,7 @@ function setupEvents() {
   itemSelect.addEventListener("change", () => {
     const item = state.items.find((entry) => entry.id === itemSelect.value);
     if (!item) return;
-    txUnit.value = item.unit || "個";
+    txUnit.value = item.unit;
   });
 
   listShelfFilter.addEventListener("change", () => {
@@ -332,7 +328,7 @@ function setupEvents() {
     const maker = String(formData.get("maker") || "").trim();
     const shelf = String(formData.get("shelf") || "").trim();
     const count = Math.max(0, Number(formData.get("count") || 0));
-    const unit = normalizeUnit(formData.get("unit"));
+    const unit = String(formData.get("unit") || "").trim() || "箱";
     const minimum = Math.max(0, Number(formData.get("minimum") || 0));
     const memo = String(formData.get("memo") || "").trim();
 
@@ -369,7 +365,7 @@ function setupEvents() {
     if (!Number.isFinite(amount) || amount < 0) return;
 
     const type = txType.value;
-    const unit = normalizeUnit(txUnit.value, item.unit || "個");
+    const unit = txUnit.value.trim() || "箱";
     const note = txNote.value.trim();
     item.unit = unit;
 
@@ -409,7 +405,7 @@ function setupEvents() {
     item.maker = editMaker.value.trim();
     item.shelf = editShelf.value.trim();
     item.count = Math.max(0, Number(editCount.value) || 0);
-    item.unit = normalizeUnit(editUnit.value, item.unit || "個");
+    item.unit = editUnit.value.trim() || "箱";
     item.minimum = Math.max(0, Number(editMinimum.value) || 0);
     item.memo = editMemo.value.trim();
 
