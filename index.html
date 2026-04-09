@@ -45,11 +45,7 @@
               </label>
               <label>数量<input id="txAmount" type="number" min="0" required /></label>
               <label>単位
-                <select id="txUnit">
-                  <option value="箱">箱</option>
-                  <option value="袋">袋</option>
-                  <option value="本">本</option>
-                </select>
+                <input id="txUnit" list="unitOptions" placeholder="例: 箱、袋、本、個" />
               </label>
             </div>
             <div class="form-row form-row-operator">
@@ -106,13 +102,7 @@
               <label>メーカー<input name="maker" /></label>
               <label>棚番号<input name="shelf" placeholder="例: A2, C4" required /></label>
               <label>初期数量<input name="count" type="number" min="0" value="0" required /></label>
-              <label>単位
-                <select name="unit">
-                  <option value="箱">箱</option>
-                  <option value="袋">袋</option>
-                  <option value="本">本</option>
-                </select>
-              </label>
+              <label>単位<input name="unit" list="unitOptions" placeholder="例: 箱、袋、本、個" /></label>
               <label>最低数<input name="minimum" type="number" min="0" value="0" required /></label>
             </div>
             <label>品目メモ<textarea name="memo" rows="3" placeholder="サイズ、保管条件、注意点など"></textarea></label>
@@ -188,13 +178,7 @@
           <label>メーカー<input id="editMaker" /></label>
           <label>棚番号<input id="editShelf" required /></label>
           <label>カウント<input id="editCount" type="number" min="0" required /></label>
-          <label>単位
-            <select id="editUnit">
-              <option value="箱">箱</option>
-              <option value="袋">袋</option>
-              <option value="本">本</option>
-            </select>
-          </label>
+          <label>単位<input id="editUnit" list="unitOptions" placeholder="例: 箱、袋、本、個" /></label>
           <label>最低数<input id="editMinimum" type="number" min="0" required /></label>
         </div>
         <label>品目メモ<textarea id="editMemo" rows="3"></textarea></label>
@@ -215,6 +199,14 @@
         <p id="m1AlertMessage">M1に報告してください。</p>
       </form>
     </dialog>
+
+    <datalist id="unitOptions">
+      <option value="箱"></option>
+      <option value="袋"></option>
+      <option value="本"></option>
+      <option value="個"></option>
+      <option value="セット"></option>
+    </datalist>
 
     <script src="app.js"></script>
   </body>
