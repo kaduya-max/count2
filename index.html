@@ -8,14 +8,14 @@
   </head>
   <body>
     <header>
-      <h1>会議室　在庫管理</h1>
+      <h1>在庫管理サイト</h1>
     </header>
 
     <main>
       <nav class="tabs" aria-label="画面切り替え">
-        <button class="tab active" type="button" data-tab="stock">現在の在庫</button>
-        <button class="tab" type="button" data-tab="setup">棚卸・品目登録</button>
-        <button class="tab" type="button" data-tab="history">履歴</button>
+        <button class="tab active" type="button" data-tab="stock">1ページ目: 現在の在庫</button>
+        <button class="tab" type="button" data-tab="setup">2ページ目: 棚卸・品目登録</button>
+        <button class="tab" type="button" data-tab="history">3ページ目: 履歴</button>
       </nav>
 
       <section class="page active" data-page="stock">
@@ -44,12 +44,10 @@
                 </select>
               </label>
               <label>数量<input id="txAmount" type="number" min="0" required /></label>
-              <label>単位
-                <input id="txUnit" list="unitOptions" placeholder="例: 箱、袋、本、個" />
-              </label>
+              <label>単位<input id="txUnit" list="unitSuggestions" placeholder="例: 箱, 袋, 本, 個" /></label>
             </div>
             <div class="form-row form-row-operator">
-              <label>記入者名<input id="operatorInlineInput" placeholder="例: 中村　元" required /></label>
+              <label>記入者名<input id="operatorInlineInput" placeholder="例: 田中" required /></label>
             </div>
             <label>記入内容（理由・補足）
               <textarea id="txNote" rows="2" placeholder="例: 研究室Aで10個使用"></textarea>
@@ -73,7 +71,7 @@
                 <th>品名</th>
                 <th>メーカー</th>
                 <th>棚番号</th>
-                <th>数量</th>
+                <th>カウント</th>
                 <th>単位</th>
                 <th>最低数</th>
                 <th>メモ</th>
@@ -88,7 +86,7 @@
       <section class="page" data-page="setup">
         <section class="card">
           <h2>品目登録</h2>
-          <label>記入者名<input id="operatorSetupInput" placeholder="例: 中村　元" required /></label>
+          <label>記入者名<input id="operatorSetupInput" placeholder="例: 田中" required /></label>
           <p class="test-placeholder">
             test<br />
             <br />
@@ -101,8 +99,8 @@
               <label>品名<input name="name" required /></label>
               <label>メーカー<input name="maker" /></label>
               <label>棚番号<input name="shelf" placeholder="例: A2, C4" required /></label>
-              <label>初期数量<input name="count" type="number" min="0" value="0" required /></label>
-              <label>単位<input name="unit" list="unitOptions" placeholder="例: 箱、袋、本、個" /></label>
+              <label>初期カウント<input name="count" type="number" min="0" value="0" required /></label>
+              <label>単位<input name="unit" list="unitSuggestions" placeholder="例: 箱, 袋, 本, 個" /></label>
               <label>最低数<input name="minimum" type="number" min="0" value="0" required /></label>
             </div>
             <label>品目メモ<textarea name="memo" rows="3" placeholder="サイズ、保管条件、注意点など"></textarea></label>
@@ -133,7 +131,7 @@
               <tr>
                 <th>日時</th>
                 <th>記入者</th>
-                <th>品名</th>
+                <th>記入内容</th>
               </tr>
             </thead>
             <tbody id="historyAddBody"></tbody>
@@ -147,7 +145,7 @@
               <tr>
                 <th>日時</th>
                 <th>記入者</th>
-                <th>品目</th>
+                <th>記入内容</th>
               </tr>
             </thead>
             <tbody id="historyCountBody"></tbody>
@@ -161,7 +159,7 @@
               <tr>
                 <th>日時</th>
                 <th>記入者</th>
-                <th>品目</th>
+                <th>記入内容</th>
               </tr>
             </thead>
             <tbody id="historyRegisterBody"></tbody>
@@ -178,7 +176,7 @@
           <label>メーカー<input id="editMaker" /></label>
           <label>棚番号<input id="editShelf" required /></label>
           <label>カウント<input id="editCount" type="number" min="0" required /></label>
-          <label>単位<input id="editUnit" list="unitOptions" placeholder="例: 箱、袋、本、個" /></label>
+          <label>単位<input id="editUnit" list="unitSuggestions" placeholder="例: 箱, 袋, 本, 個" /></label>
           <label>最低数<input id="editMinimum" type="number" min="0" required /></label>
         </div>
         <label>品目メモ<textarea id="editMemo" rows="3"></textarea></label>
@@ -200,12 +198,12 @@
       </form>
     </dialog>
 
-    <datalist id="unitOptions">
+    <datalist id="unitSuggestions">
       <option value="箱"></option>
       <option value="袋"></option>
-      <option value="本"></option>
       <option value="個"></option>
-      <option value="セット"></option>
+      <option value="本"></option>
+      <option value="台"></option>
     </datalist>
 
     <script src="app.js"></script>
