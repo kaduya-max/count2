@@ -59,7 +59,7 @@ function persist() {
 }
 
 function normalizeItem(item) {
-  const unit = item.unit === "袋" ? "袋" : "箱";
+    const unit = String(item.unit ?? "").trim() || "個";
   return {
     id: item.id,
     name: String(item.name ?? "").trim(),
@@ -160,7 +160,7 @@ function renderItemSelect() {
   for (const item of candidates) {
     const option = document.createElement("option");
     option.value = item.id;
-    option.textContent = `${item.name}（棚:${item.shelf} / 在庫:${item.count}${item.unit}）`;
+    option.textContent = `${item.name}（メーカー:${item.maker || "-"} / 棚:${item.shelf} / 在庫:${item.count}${item.unit}）`;
     itemSelect.appendChild(option);
   }
 
@@ -224,7 +224,11 @@ function render() {
 
   txAmount.placeholder = txType.value === "count" ? "現在の実数" : "増減の数量";
   const selectedItem = state.items.find((entry) => entry.id === itemSelect.value);
-  txUnit.value = selectedItem?.unit || "箱";
+  txUnit.value = selectedItem?.unit || "個";
+}
+
+function normalizeUnit(value, fallback = "個") {
+  return String(value ?? "").trim() || fallback;
 }
 
 function updateOperatorFromInline() {
@@ -312,7 +316,7 @@ function setupEvents() {
   itemSelect.addEventListener("change", () => {
     const item = state.items.find((entry) => entry.id === itemSelect.value);
     if (!item) return;
-    txUnit.value = item.unit;
+    txUnit.value = item.unit || "個";
   });
 
   listShelfFilter.addEventListener("change", () => {
@@ -328,7 +332,7 @@ function setupEvents() {
     const maker = String(formData.get("maker") || "").trim();
     const shelf = String(formData.get("shelf") || "").trim();
     const count = Math.max(0, Number(formData.get("count") || 0));
-    const unit = String(formData.get("unit") || "箱");
+    const unit = normalizeUnit(formData.get("unit"));
     const minimum = Math.max(0, Number(formData.get("minimum") || 0));
     const memo = String(formData.get("memo") || "").trim();
 
@@ -338,7 +342,7 @@ function setupEvents() {
       maker,
       shelf,
       count,
-      unit: unit === "袋" ? "袋" : "箱",
+      unit,
       minimum,
       memo,
     };
@@ -365,7 +369,7 @@ function setupEvents() {
     if (!Number.isFinite(amount) || amount < 0) return;
 
     const type = txType.value;
-    const unit = txUnit.value === "袋" ? "袋" : "箱";
+    const unit = normalizeUnit(txUnit.value, item.unit || "個");
     const note = txNote.value.trim();
     item.unit = unit;
 
@@ -405,7 +409,7 @@ function setupEvents() {
     item.maker = editMaker.value.trim();
     item.shelf = editShelf.value.trim();
     item.count = Math.max(0, Number(editCount.value) || 0);
-    item.unit = editUnit.value === "袋" ? "袋" : "箱";
+    item.unit = normalizeUnit(editUnit.value, item.unit || "個");
     item.minimum = Math.max(0, Number(editMinimum.value) || 0);
     item.memo = editMemo.value.trim();
 
